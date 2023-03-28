@@ -1,8 +1,7 @@
-//@desc     Get all dentists
-//@route    GET /api/v1/dentists
-
 const Dentist = require("../models/Dentist");
 
+//@desc     Get all dentists
+//@route    GET /api/v1/dentists
 //@access   Public
 exports.getDentists = async (req, res, next) => {
   try {
