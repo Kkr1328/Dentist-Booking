@@ -8,29 +8,36 @@ const DentistSchema = new mongoose.Schema({
     trim: true,
     maxlength: [50, "Name can not be more than 50 characters"],
   },
-  address: {
-    type: String,
-    required: [true, "Please add a address"],
+  years_of_exp: {
+    type: Number,
+    required: [true, "Please add years of expertise"],
   },
-  district: {
+  area_of_exp: {
     type: String,
-    required: [true, "Please add a district"],
+    required: [true, "Please add area of expertise"],
   },
-  province: {
-    type: String,
-    required: [true, "Please add a province"],
-  },
-  postalcode: {
-    type: String,
-    required: [true, "Please add a postalcode"],
-    maxlength: [5, "Postal Code can not be more than 5 digits"],
-  },
-  tel: {
-    type: String,
-  },
-  region: {
-    type: String,
-    required: [true, "Please add a region"],
+  available_datetime: {
+    type: Array({
+      weekday: {
+        type: Number,
+        required: [true, "Please add a weekday"],
+        min: 0,
+        max: 6,
+      },
+      start_hour: {
+        type: Number,
+        required: [true, "Please add a start hour"],
+        min: 0,
+        max: 23,
+      },
+      end_hour: {
+        type: Number,
+        required: [true, "Please add a end hour"],
+        min: 0,
+        max: 23,
+      },
+    }),
+    required: [true, "Please add an available datetime"],
   },
 });
 
