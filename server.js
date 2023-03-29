@@ -2,6 +2,8 @@ const express = require("express");
 const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
 const connectDB = require("./config/db");
+const swaggerJsDoc = require("swagger-jsdoc");
+const swaggerUI = require("swagger-ui-express");
 
 // Load env vars
 dotenv.config({ path: "./config/config.env" });
@@ -24,6 +26,26 @@ app.use("/api/v1/auth", auth);
 
 //Cookie parser
 app.use(cookieParser());
+
+//Swagger API
+const swaggerOptions = {
+  swaggerDefinition: {
+    openapi: "3.0.0",
+    info: {
+      title: "Library API",
+      version: "1.0.0",
+      description: "A simple Express VacQ API",
+    },
+    servers: [
+      {
+        url: "http://localhost:5000/api/v1",
+      },
+    ],
+  },
+  apis: ["./routes/*.js"],
+};
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerDocs));
 
 const PORT = process.env.PORT || 5000;
 
