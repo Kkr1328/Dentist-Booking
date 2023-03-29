@@ -7,9 +7,14 @@ const {
   deleteDentist,
 } = require("../controllers/dentists");
 
+//Include other resource routers
+const appointmentRouter = require("./appointments");
 const router = express.Router();
 
 const { protect, authorize } = require("../middleware/auth");
+
+//Re-route into other resource routers
+router.use("/:dentistId/appointments/", appointmentRouter);
 
 router.route("/").get(getDentists).post(protect, authorize("admin"), createDentist);
 router
