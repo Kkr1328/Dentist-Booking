@@ -32,6 +32,18 @@ exports.getDentist = async (req, res, next) => {
 //@route    POST /api/v1/dentists
 //@access   Private
 exports.createDentist = async (req, res, next) => {
+  for (let i = 0; i < req.body.available_datetime.length; i++) {
+    const avai_start_hour = req.body.available_datetime[i].start_hour;
+    const avai_end_hour = req.body.available_datetime[i].end_hour;
+    if (avai_start_hour > avai_end_hour) {
+      return res.status(400).json({
+        success: false,
+        data: dentist,
+        message: "The start hour can't be before the end hour",
+      });
+    }
+  }
+
   const dentist = await Dentist.create(req.body);
   res.status(201).json({ success: true, data: dentist });
 };
@@ -48,6 +60,20 @@ exports.updateDentist = async (req, res, next) => {
 
     if (!dentist) {
       res.status(400).json({ success: false });
+    }
+
+    if (!dentist.available_datetime) {
+      for (let i = 0; i < dentist.available_datetime.length; i++) {
+        const avai_start_hour = dentist.available_datetime[i].start_hour;
+        const avai_end_hour = dentist.available_datetime[i].end_hour;
+        if (avai_start_hour > avai_end_hour) {
+          return res.status(400).json({
+            success: false,
+            data: dentist,
+            message: "The start hour can't be before the end hour",
+          });
+        }
+      }
     }
 
     res.status(200).json({ success: true, data: dentist });
