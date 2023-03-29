@@ -11,12 +11,12 @@ exports.getAppointments = async (req, res, next) => {
   if (req.user.role !== "admin") {
     query = Appointment.find({ user: req.user.id }).populate({
       path: "dentist",
-      select: "name years_of_exp area_of_exp",
+      select: "name years_of_exp area_of_exp available_datetime",
     });
   } else {
     query = Appointment.find().populate({
       path: "dentist",
-      select: "name years_of_exp area_of_exp",
+      select: "name years_of_exp area_of_exp available_datetime",
     });
   }
 
@@ -37,7 +37,7 @@ exports.getAppointment = async (req, res, next) => {
   try {
     const appointment = await Appointment.findById(req.params.id).populate({
       path: "dentist",
-      select: "name years_of_exp area_of_exp",
+      select: "name years_of_exp area_of_exp available_datetime",
     });
 
     if (!appointment) {
@@ -68,6 +68,30 @@ exports.addAppointment = async (req, res, next) => {
         .json({ success: false, message: `No dentist with the id of ${req.params.dentistId}` });
     }
 
+    const appt_date = new Date(req.body.apptDate);
+    const appt_weekday = appt_date.getDay();
+    const appt_hour = appt_date.getHours();
+    let isAvailable = false;
+
+    for (let i = 0; i < dentist.available_datetime.length; i++) {
+      const avai_weekday = dentist.available_datetime[i].weekday;
+      const avai_start_hour = dentist.available_datetime[i].start_hour;
+      const avai_end_hour = dentist.available_datetime[i].end_hour;
+      if (avai_weekday === appt_weekday) {
+        if (avai_start_hour <= appt_hour && appt_hour <= avai_end_hour) {
+          isAvailable = true;
+          break;
+        }
+      }
+    }
+
+    if (!isAvailable) {
+      return res.status(400).json({
+        success: false,
+        message: `No dentist's available datetime with the id of ${req.params.dentistId}`,
+      });
+    }
+
     //add user Id to req.body
     req.body.user = req.user.id;
 
@@ -75,10 +99,10 @@ exports.addAppointment = async (req, res, next) => {
     const existedAppointments = await Appointment.find({ user: req.user.id });
 
     //If the user is not an admin, they can only create 3 appointments
-    if (existedAppointments.length >= 3 && req.user.role !== "admin") {
+    if (existedAppointments.length >= 1 && req.user.role !== "admin") {
       return res.status(400).json({
         success: false,
-        message: `The user with ID ${req.user.id} has already made 3 appointments`,
+        message: `The user with ID ${req.user.id} has already made 1 appointment`,
       });
     }
 
@@ -102,6 +126,40 @@ exports.updateAppointment = async (req, res, next) => {
       return res
         .status(404)
         .json({ success: false, message: `No appointment with the id of ${req.params.id}` });
+    }
+
+    if (!req.body.apptDate) {
+      const dentist = await Dentist.findById(appointment.dentist);
+
+      if (!dentist) {
+        return res
+          .status(404)
+          .json({ success: false, message: `No dentist with the id of ${req.params.dentistId}` });
+      }
+
+      const appt_date = new Date(req.body.apptDate);
+      const appt_weekday = appt_date.getDay();
+      const appt_hour = appt_date.getHours();
+      let isAvailable = false;
+
+      for (let i = 0; i < dentist.available_datetime.length; i++) {
+        const avai_weekday = dentist.available_datetime[i].weekday;
+        const avai_start_hour = dentist.available_datetime[i].start_hour;
+        const avai_end_hour = dentist.available_datetime[i].end_hour;
+        if (avai_weekday === appt_weekday) {
+          if (avai_start_hour <= appt_hour && appt_hour <= avai_end_hour) {
+            isAvailable = true;
+            break;
+          }
+        }
+      }
+
+      if (!isAvailable) {
+        return res.status(400).json({
+          success: false,
+          message: `No dentist's available datetime with the id of ${req.params.dentistId}`,
+        });
+      }
     }
 
     //Make sure user is the appointment owner
