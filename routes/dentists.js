@@ -88,7 +88,7 @@ module.exports = router;
  *     name: WorldMedical
  *     years_of_exp: 20
  *     area_of_exp: ฟันผุ
- *     available_datetime: [{weekday:3, start_hour:12, end_hour:18}, {weekday:4, start_hour:8, end_hour:17}]
+ *     available_datetime: [{"weekday":3, "start_hour":12, "end_hour":18}, {"weekday":4, "start_hour":8, "end_hour":17}]
  */
 
 /**
@@ -97,6 +97,13 @@ module.exports = router;
  *  get:
  *   summary: Returns the list of all the dentists
  *   tags: [Dentists]
+ *   securityDefinitions:
+ *     BearerAuth:
+ *      type: apiKey
+ *      name: Authorization
+ *      in: header
+ *   security:
+ *     - BearerAuth: []
  *   responses:
  *    200:
  *     description: The list of the dentists
@@ -106,4 +113,121 @@ module.exports = router;
  *        type: array
  *        items:
  *         $ref: '#/components/schemas/Dentist'
+ *    400:
+ *     description: No dentist found or something wrong
+ *  post:
+ *   tags: [Dentists]
+ *   summary: create a new dentist
+ *   securityDefinitions:
+ *     BearerAuth:
+ *      type: apiKey
+ *      name: Authorization
+ *      in: header
+ *   security:
+ *     - BearerAuth: []
+ *   requestBody:
+ *     description: dentist which want to create
+ *     content:
+ *       application/json:
+ *         schema:
+ *           $ref: '#/components/schemas/Dentist'
+ *         example:
+ *           name: WorldMedical
+ *           years_of_exp: 20
+ *           area_of_exp: ฟันผุ
+ *           available_datetime: [{"weekday":3, "start_hour":12, "end_hour":18}, {"weekday":4, "start_hour":8, "end_hour":17}]
+ *   responses:
+ *    201:
+ *     description: success to create a dentists
+ *     content:
+ *       application/json:
+ *         schema:
+ *           $ref: '#/components/schemas/Dentist'
+ *    400:
+ *     description: The start hour is be before the end hour
+ */
+
+/**
+ * @swagger
+ * /dentists/{id}:
+ *  get:
+ *   tags: [Dentists]
+ *   summary: Returns a dentist which match id
+ *   securityDefinitions:
+ *     BearerAuth:
+ *      type: apiKey
+ *      name: Authorization
+ *      in: header
+ *   security:
+ *     - BearerAuth: []
+ *   parameters:
+ *    - name: id
+ *      in: path
+ *      description: dentist's id
+ *      required: true
+ *      type: uuid
+ *   responses:
+ *    200:
+ *     description: a dentist which match ID
+ *     content:
+ *      application/json:
+ *       schema:
+ *        $ref: '#/components/schemas/Dentist'
+ *  delete:
+ *   tags: [Dentists]
+ *   summary: delete a dentist
+ *   securityDefinitions:
+ *     BearerAuth:
+ *      type: apiKey
+ *      name: Authorization
+ *      in: header
+ *   security:
+ *     - BearerAuth: []
+ *   parameters:
+ *    - name: id
+ *      in: path
+ *      description: dentist's id
+ *      required: true
+ *      type: uuid
+ *   responses:
+ *    200:
+ *     description: Success delete a dentist
+ *    400:
+ *     description: Can't find dentist to delete or something went wrong
+ *  put:
+ *   summary: Update a dentist data
+ *   tags: [Dentists]
+ *   securityDefinitions:
+ *     BearerAuth:
+ *      type: apiKey
+ *      name: Authorization
+ *      in: header
+ *   security:
+ *     - BearerAuth: []
+ *   parameters:
+ *    - name: id
+ *      in: path
+ *      description: dentist's id
+ *      required: true
+ *      type: uuid
+ *   requestBody:
+ *     description: dentist data which want to update
+ *     content:
+ *       application/json:
+ *         schema:
+ *           $ref: '#/components/schemas/Dentist'
+ *         example:
+ *           name: WorldMedical
+ *           years_of_exp: 20
+ *           area_of_exp: ฟันผุ
+ *           available_datetime: [{"weekday":3, "start_hour":12, "end_hour":18}, {"weekday":4, "start_hour":8, "end_hour":17}]
+ *   responses:
+ *    200:
+ *     description: Success update a dentist
+ *     content:
+ *      application/json:
+ *       schema:
+ *        $ref: '#/components/schemas/Dentist'
+ *    400:
+ *     description: Can't find dentist to update or something went wrong
  */

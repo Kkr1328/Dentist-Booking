@@ -68,3 +68,95 @@ module.exports = router;
  *     role: admin
  *     createAt: 2023-03-29T07:01:07.968+00:00
  */
+
+/**
+ * @swagger
+ * /auth/register:
+ *  post:
+ *   summary: Register a user
+ *   tags: [Users]
+ *   requestBody:
+ *    description: User object
+ *    required: true
+ *    content:
+ *       application/json:
+ *         schema:
+ *           type: object
+ *           properties:
+ *             name:
+ *               type: string
+ *             tel:
+ *               type: string
+ *             email:
+ *               type: string
+ *             password:
+ *               type: string
+ *             role:
+ *               type: string
+ *         example:
+ *           name: aom
+ *           tel: "0933780030"
+ *           email: aom@gmail.com
+ *           password: "123456"
+ *           role: user
+ *   responses:
+ *    200:
+ *     description: registration success
+ *    400:
+ *     description: can't register 
+ * 
+ * /auth/login:
+ *  post:
+ *   summary: Login a user
+ *   tags: [Users]
+ *   requestBody:
+ *    description: email and password
+ *    required: true
+ *    content:
+ *       application/json:
+ *         schema:
+ *           type: object
+ *           properties:
+ *             email:
+ *               type: string
+ *             password:
+ *               type: string
+ *         example:
+ *           email: aom@gmail.com
+ *           password: "123456"
+ *   responses:
+ *    200:
+ *     description: login success
+ *     content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              token:
+ *                type: string
+ *          example:
+ *            token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0MjU2ZGVmYzA3MzJjMGEwZTBkMGQ1ZSIsImlhdCI6MTY4MDI0ODMzMSwiZXhwIjoxNjgyODQwMzMxfQ.n8NkpzgSPYOus5iM0BMq6XV653WO1pb2SZisDJOXHUM
+ *    400:
+ *     description: not provide an email or password
+ *    401:
+ *     description: Invalid credentials
+ * 
+ * /auth/me:
+ *   get:
+ *    summary: get current logged in user
+ *    tags: [Users]
+ *    securityDefinitions:
+ *     BearerAuth:
+ *      type: apiKey
+ *      name: Authorization
+ *      in: header
+ *    security:
+ *     - BearerAuth: []
+ *    responses:
+ *     200:
+ *      description: getMe success
+ *      content:
+ *       application/json:
+ *         schema:
+ *          $ref: '#/components/schemas/User'
+ */   

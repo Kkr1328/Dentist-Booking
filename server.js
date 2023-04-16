@@ -36,6 +36,18 @@ const swaggerOptions = {
       version: "1.0.0",
       description: "Dentist-Booking API documents",
     },
+    components: {
+      securitySchemes: {
+        BearerAuth:{
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT'
+        }
+      }
+    },
+    security: [{
+      BearerAuth: []
+    }],
     servers: [
       {
         url: "http://localhost:5000/api/v1",
