@@ -39,6 +39,10 @@ const DentistSchema = new mongoose.Schema({
     }),
     required: [true, "Please add an available datetime"],
   },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
 });
 
 module.exports = mongoose.model("Dentist", DentistSchema);
