@@ -33,13 +33,13 @@ exports.getDentist = async (req, res, next) => {
 //@access   Private
 exports.createDentist = async (req, res, next) => {
   for (let i = 0; i < req.body.available_datetime.length; i++) {
-    const avai_start_hour = req.body.available_datetime[i].start_hour;
-    const avai_end_hour = req.body.available_datetime[i].end_hour;
+    const avai_start_hour = Number(req.body.available_datetime[i].start_hour);
+    const avai_end_hour = Number(req.body.available_datetime[i].end_hour);
     if (avai_start_hour > avai_end_hour) {
       return res.status(400).json({
         success: false,
-        data: dentist,
-        message: "The start hour can't be before the end hour",
+        data: req.body,
+        message: "The end hour can't be before the start hour",
       });
     }
   }
